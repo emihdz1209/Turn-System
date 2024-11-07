@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Your Turn Number</title>
+    <link rel="stylesheet" href="..\static\css\styles.css">
+    <script src="https://unpkg.com/mysqli/dist/mysql.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="ticket-container">
+            <h1>Welcome</h1>
+            <form id="userForm" class="user-form" method="POST">
+                <div class="form-group">
+                    <label for="userName">Full Name:</label>
+                    <input type="text" id="name" placeholder="Enter your name" class="form-input" name = "name">
+                    <span class="error-message" id="nameError"></span>
+                </div>
+                <div class="form-group">
+                    <label for="userId">ID Number:</label>
+                    <input type="text" id="userId" placeholder="A0xxxxxxx" class="form-input" name = "userId">
+                    <span class="error-message" id="idError"></span>
+                </div>
+                <button type="submit" id="getNumber" class="ticket-button">Get Your Number</button>
+            </form>
+
+            <div id="ticketDisplay" class="ticket-display">
+                <h2>Your Number:</h2>
+                <div id="numberDisplay" class="number-display">{{ turno or '-' }}</div>
+                <div class="user-info">
+                    <p id="displayName" class="info-text"></p>
+                    <p id="displayId" class="info-text"></p>
+                </div>
+                <p class="info-text">Please keep this number and wait for it to be called</p>
+            </div>
+            
+        </div>
+    </div>
+=    <script src="../static/js/customer.js"></script>
+</body>
+</html>
