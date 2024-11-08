@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Turn Display</title>
+    <link rel="stylesheet" href="../static/css/styles.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="ticket-container">
+            <h1>Current Turn</h1>
+            
+            <div id="ticketDisplay" class="ticket-display show">
+                <h2>Now Serving:</h2>
+                
+                <div id="numberDisplay" class="number-display">
+                    -
+                </div>
+                
+                <div class="user-info">
+                    <p>Name: <span id="currentName">Waiting...</span></p>
+                    <p>ID: <span id="currentId">Waiting...</span></p>
+                </div>
+                
+                <p>Please proceed to the counter when your number is called</p>
+            </div>
+        </div>
+    </div>
+<script src="../static/js/displayUpdater.js"></script>
+</body>
+</html> 

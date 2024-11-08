@@ -5,17 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Staff Control Panel</title>
     <link rel="stylesheet" href="..\static\css\styles.css">
-    <script src="https://unpkg.com/mysqli/dist/mysql.min.js"></script>
 </head>
 <body>
     <div class="staff-container">
         <header class="staff-header">
             <h1>Staff Control Panel</h1>
             <div class="header-controls">
-                <button id="resetQueue" class="danger-button">Reset All Turns</button>
+                <form method="POST">
+                    <input type="hidden" name="action" value="reset">
+                    <button id="resetQueue" class="danger-button">Reset All Turns</button>
+                </form>
                 <div class="current-turn">
                     <span>Current Turn:</span>
-                    <span id="currentTurnDisplay" class="current-number">---</span>
+                    <span id="currentTurnDisplay" class="current-number">
+                        {{ current_turn.turn if current_turn else '---' }}
+                    </span>
                 </div>
             </div>
         </header>
@@ -26,11 +30,22 @@
                 <span id="queueCount" class="queue-count">0 waiting</span>
             </div>
             <div id="queueCards" class="queue-cards">
-                <!-- Cards will be inserted here by JavaScript -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Turn</th>
+                            <th>Name</th>
+                            <th>Matricula</th>
+                            <th> </th>
+                        </tr>
+                    </thead>
+                    <tbody id="queue-data">
+
+                    </tbody>
+                </table>
             </div>
         </main>
     </div>
-    <script src="js/common.js"></script>
-    <script src="js/staff.js"></script>
+    <script src="../static/js/queue.js"></script>
 </body>
 </html>
