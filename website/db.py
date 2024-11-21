@@ -22,6 +22,7 @@ def queue_turn(name, matricula):
     current_turn = turn_counter_ref.get() or 0
     new_turn = current_turn + 1
     turn_counter_ref.set(new_turn)
+
     
     turnos.push({
         'name': name,

@@ -62,15 +62,22 @@ h1 {
 }
 
 .ticket-display {
-    margin-top: 2rem;
     padding: 1rem;
     border: 2px dashed #ccc;
     border-radius: 5px;
-    opacity: 1;
-    display: none;
     transform-origin: center;
     transform: scale(1);
+    display: none; /* Default hidden */
+    opacity: 0; /* Ensures smooth animation */
+    transform: scale(0.3); /* Animation starting point */
 }
+
+.ticket-display.show {
+    display: block; /* Make it visible */
+    opacity: 1; /* Full opacity */
+    animation: popIn 0.5s ease-out forwards;
+}
+
 
 /* Entrance animation */
 @keyframes popIn {

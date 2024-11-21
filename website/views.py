@@ -10,11 +10,20 @@ def home():
         try:
             name = request.form.get('name')
             matricula = request.form.get('userId')
-            db.queue_turn(name, matricula)
-            turno = db.turn_counter_ref.get()
-            flash('Turn number assigned successfully!', 'success')
+            
+            # Validate form data
+            if name and matricula:
+                db.queue_turn(name, matricula)
+                turno = db.turn_counter_ref.get()
+                flash('Turn number assigned successfully!', 'success')
+            else:
+                flash('Error: Name and ID are required.', 'error')
         except Exception as e:
             flash('Error assigning turn number. Please try again.', 'error')
+
+    return render_template("customer.html", turno=turno)
+
+
     return render_template("customer.html", turno=turno)
 
 @views.route('/admin', methods=['GET', 'POST'])
@@ -75,7 +84,18 @@ def move_to_current():
         print('Error in move_to_current:', str(e))  # Debug log
         return jsonify({'success': False, 'error': str(e)}), 500
 
+
 @views.route('/display')
 def display():
     return render_template("display.html")
 
+@views.route('/api/current_turn', methods=['GET'])
+def get_current_turn():
+    try:
+        # Fetch the current turn from the database
+        current_turn = db.get_current_turn()
+        if current_turn:
+            return jsonify({'currentTurn': current_turn}), 200
+        return jsonify({'currentTurn': None}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

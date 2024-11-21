@@ -1,4 +1,4 @@
-class DisplayController {
+class DisplayUpdater {
     constructor(updateInterval = 1000) {
         this.updateInterval = updateInterval;
         this.intervalId = null;
@@ -7,50 +7,49 @@ class DisplayController {
     }
 
     init() {
-        this.updateDisplay(); // Initial update
-        this.intervalId = setInterval(() => this.updateDisplay(), this.updateInterval);
+        this.fetchCurrentTurn();
+        this.intervalId = setInterval(() => this.fetchCurrentTurn(), this.updateInterval);
         window.addEventListener('unload', () => this.cleanup());
     }
 
-    async updateDisplay() {
+    updateDisplay(currentTurn) {
+        const container = document.getElementById('ticketDisplay');
+        if (!container) return;
+
+        if (currentTurn) {
+            // Check if turn number changed to trigger animation
+            const isNewTurn = this.lastTurnNumber !== currentTurn.turn; 
+            this.lastTurnNumber = currentTurn.turn;
+
+            container.innerHTML = `
+                <div class="turn-number">Turn ${currentTurn.turn}</div>
+                <div class="turn-details">
+                    <p>${currentTurn.name}</p>
+                    <p>Matricula: ${currentTurn.matricula}</p>
+                </div>
+            `;
+
+            if (isNewTurn) {
+                container.classList.remove('highlight');
+                void container.offsetWidth; // Trigger reflow
+                container.classList.add('highlight');
+            }
+        } else {
+            container.innerHTML = '<p class="no-turn">Waiting for next turn...</p>';
+            this.lastTurnNumber = null;
+        }
+    }
+
+    async fetchCurrentTurn() {
         try {
-            const response = await fetch('/api/queue-data');
+            const response = await fetch('/api/current_turn');
             if (!response.ok) {
-                throw new Error('HTTP error! status: ${response.status}');
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
-            
-            // Update the display with current turn data
-            const numberDisplay = document.getElementById('numberDisplay');
-            const currentName = document.getElementById('currentName');
-            const currentId = document.getElementById('currentId');
-            
-            if (data.currentTurn) {
-                // Check if turn number changed to trigger animation
-                const isNewTurn = this.lastTurnNumber !== data.currentTurn.turn;
-                this.lastTurnNumber = data.currentTurn.turn;
-
-                // Update display elements
-                numberDisplay.textContent = data.currentTurn.turn;
-                currentName.textContent = data.currentTurn.name;
-                currentId.textContent = data.currentTurn.matricula;
-
-                if (isNewTurn) {
-                    // Add animation class
-                    const ticketDisplay = document.getElementById('ticketDisplay');
-                    ticketDisplay.classList.remove('show');
-                    void ticketDisplay.offsetWidth; // Trigger reflow
-                    ticketDisplay.classList.add('show');
-                }
-            } else {
-                // Reset display when no current turn
-                numberDisplay.textContent = '-';
-                currentName.textContent = 'Waiting...';
-                currentId.textContent = 'Waiting...';
-                this.lastTurnNumber = null;
-            }
+            this.updateDisplay(data.currentTurn);
         } catch (error) {
-            console.error('Error updating display:', error);
+            console.error('Error fetching current turn:', error);
         }
     }
 
@@ -62,7 +61,7 @@ class DisplayController {
     }
 }
 
-// Initialize the display controller when the DOM is fully loaded
+// Initialize the display updater when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
-    new DisplayController();
+    new DisplayUpdater();
 });
