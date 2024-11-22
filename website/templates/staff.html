@@ -13,8 +13,9 @@
             <div class="header-controls">
                 <form method="POST">
                     <input type="hidden" name="action" value="reset">
-                    <button id="resetQueue" class="danger-button">Reset All Turns</button>
+                    <button id="resetQueue" class="danger-button" type="submit">Reset all turns</button>
                 </form>
+                
                 <div class="current-turn">
                     <span>Current Turn:</span>
                     <span id="currentTurnDisplay" class="current-number">
@@ -33,17 +34,18 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Turn</th>
-                            <th>Name</th>
-                            <th>Matricula</th>
-                            <th> </th>
+                            <th class="turn-number-column">Turn</th>
+                            <th class="name-column">Name</th>
+                            <th class="id-column">Matricula</th>
+                            <th class="time-column">Time</th>
+                            <th class="send-column"> </th>
                         </tr>
                     </thead>
                     <tbody id="queue-data">
-
+                        <!-- Table rows go here -->
                     </tbody>
                 </table>
-            </div>
+            </div>            
         </main>
     </div>
     <script src="../static/js/queue.js"></script>

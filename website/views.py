@@ -1,41 +1,47 @@
-from flask import render_template, Blueprint, request, flash, jsonify
+from flask import render_template, Blueprint, request, flash, jsonify, redirect, url_for
 from . import db
 
 views = Blueprint('views', __name__)
 
 @views.route('/', methods=['GET', 'POST'])
 def home():
-    turno = None
     if request.method == 'POST':
+        name = request.form.get('name')
+        matricula = request.form.get('userId')
+
+        if not name or not matricula:
+            return jsonify({'success': False, 'message': 'Name and ID are required.'}), 400
+
         try:
-            name = request.form.get('name')
-            matricula = request.form.get('userId')
-            
-            # Validate form data
-            if name and matricula:
-                db.queue_turn(name, matricula)
-                turno = db.turn_counter_ref.get()
-                flash('Turn number assigned successfully!', 'success')
-            else:
-                flash('Error: Name and ID are required.', 'error')
+            db.queue_turn(name, matricula)
+            turno = db.turn_counter_ref.get()
+            return jsonify({'success': True, 'turno': turno}), 200
         except Exception as e:
-            flash('Error assigning turn number. Please try again.', 'error')
+            return jsonify({'success': False, 'message': 'Error assigning turn number.'}), 500
 
-    return render_template("customer.html", turno=turno)
+    return render_template("customer.html")
 
 
-    return render_template("customer.html", turno=turno)
+
 
 @views.route('/admin', methods=['GET', 'POST'])
 def admin():
     if request.method == 'POST':
         action = request.form.get('action')
-        if action == 'reset':
+        print('---ACTED UPON')
+        if action == 'reset':  # Ensure only "Reset all turns" triggers purge
+            print('---Reset button hit')
             db.delete_queue()
-            flash('Queue reset', 'success')
-    
+            flash('Queue reset successfully!', 'success')
+            return redirect(url_for('views.admin'))  # Redirect after action
+        else:
+            flash('Invalid action.', 'error')
+
     current_turn = db.get_current_turn()
     return render_template("staff.html", current_turn=current_turn)
+
+
+
 
 @views.route('/api/queue-data')
 def get_queue_data():
